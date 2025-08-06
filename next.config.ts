@@ -18,14 +18,6 @@ export default () => {
     experimental: {
       taint: true,
     },
-    // Add browser compatibility for older devices
-    transpilePackages: [],
-    compiler: {
-      // Remove console.logs in production for better performance
-      removeConsole: process.env.NODE_ENV === "production",
-    },
-    // Ensure compatibility with older browsers
-    swcMinify: false, // Use Babel instead for better compatibility
   };
   const withNextIntl = createNextIntlPlugin();
   return withNextIntl(nextConfig);
