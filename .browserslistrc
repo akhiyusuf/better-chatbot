@@ -1,0 +1,12 @@
+# Browsers that we support - including older iOS devices
+
+> 0.5%
+last 3 versions
+not dead
+not ie 11
+not op_mini all
+Chrome >= 60
+Firefox >= 60
+Safari >= 12
+Edge >= 79
+iOS >= 12
