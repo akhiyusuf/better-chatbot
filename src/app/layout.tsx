@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import "./ios-fixes.css";
 import {
   ThemeProvider,
   ThemeStyleProvider,
@@ -9,7 +8,6 @@ import {
 import { Toaster } from "ui/sonner";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale } from "next-intl/server";
-import { IOSCompatibilityFix } from "@/components/ios-compatibility-fix";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -23,19 +21,6 @@ export const metadata: Metadata = {
   title: "better-chatbot",
   description:
     "Better Chatbot is a chatbot that uses the Tools to answer questions.",
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 1,
-    userScalable: false,
-    viewportFit: "cover",
-  },
-  other: {
-    "mobile-web-app-capable": "yes",
-    "apple-mobile-web-app-capable": "yes",
-    "apple-mobile-web-app-status-bar-style": "default",
-    "format-detection": "telephone=no",
-  },
 };
 
 // const themes = BASE_THEMES.flatMap((t) => [t, `${t}-dark`]);
@@ -52,7 +37,6 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <IOSCompatibilityFix />
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
