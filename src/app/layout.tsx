@@ -10,6 +10,7 @@ import { NextIntlClientProvider } from "next-intl";
 import { getLocale } from "next-intl/server";
 import { IOSCompatibilityFix } from "@/components/ios-compatibility-fix";
 import { IOSErrorBoundary } from "@/components/ios-error-boundary";
+import { IOSLoadingFallback } from "@/components/ios-loading-fallback";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -90,6 +91,7 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <IOSCompatibilityFix />
+        <IOSLoadingFallback />
         <IOSErrorBoundary>
           <ThemeProvider
             attribute="class"

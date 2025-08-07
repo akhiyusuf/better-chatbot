@@ -19,6 +19,28 @@ export function IOSCompatibilityFix() {
   useEffect(() => {
     // iOS WebKit compatibility fixes
     if (typeof window !== "undefined") {
+      // Handle global errors early
+      window.addEventListener("error", (event) => {
+        const isIOSError =
+          /iPad|iPhone|iPod/.test(navigator.userAgent) &&
+          (event.message?.includes("eruda") ||
+            event.message?.includes("Script error") ||
+            event.message?.includes("client-side exception"));
+
+        if (isIOSError) {
+          event.preventDefault();
+          console.warn("iOS error prevented:", event.message);
+        }
+      });
+
+      window.addEventListener("unhandledrejection", (event) => {
+        const isIOSError = /iPad|iPhone|iPod/.test(navigator.userAgent);
+        if (isIOSError) {
+          event.preventDefault();
+          console.warn("iOS promise rejection handled:", event.reason);
+        }
+      });
+
       // Apply debug tool fixes first
       disableProblematicDebugTools();
 

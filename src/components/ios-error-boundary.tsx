@@ -32,11 +32,25 @@ export class IOSErrorBoundary extends Component<Props, State> {
       /iPad|iPhone|iPod/.test(navigator.userAgent) &&
       (error.message.includes("eruda") ||
         error.message.includes("Script error") ||
-        error.message.includes("Non-Error promise rejection"));
+        error.message.includes("Non-Error promise rejection") ||
+        error.message.includes("client-side exception") ||
+        error.message.includes("ChunkLoadError") ||
+        error.message.includes("Loading chunk") ||
+        error.message.includes("Loading CSS chunk"));
 
     if (isIOSError) {
       // Handle iOS-specific errors gracefully
       console.warn("iOS-specific error handled:", error.message);
+
+      // Try to recover by clearing cache and reloading after a delay
+      setTimeout(() => {
+        if ("serviceWorker" in navigator) {
+          navigator.serviceWorker.getRegistrations().then((registrations) => {
+            registrations.forEach((registration) => registration.unregister());
+          });
+        }
+        window.location.reload();
+      }, 2000);
     }
   }
 
