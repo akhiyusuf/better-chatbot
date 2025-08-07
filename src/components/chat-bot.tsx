@@ -350,7 +350,7 @@ export default function ChatBot({ threadId, initialMessages, slots }: Props) {
       <div
         className={cn(
           emptyMessage && "justify-center pb-24",
-          "flex flex-col min-w-0 relative h-full z-40",
+          "flex flex-col min-w-0 relative h-full z-40 ios-safe-area",
         )}
       >
         {emptyMessage ? (
@@ -388,7 +388,9 @@ export default function ChatBot({ threadId, initialMessages, slots }: Props) {
                     setMessages={setMessages}
                     reload={reload}
                     className={
-                      needSpaceClass(index) ? "min-h-[calc(55dvh-40px)]" : ""
+                      needSpaceClass(index)
+                        ? "ios-min-vh-55 min-h-[calc(55vh-40px)]"
+                        : ""
                     }
                   />
                 );
@@ -400,7 +402,7 @@ export default function ChatBot({ threadId, initialMessages, slots }: Props) {
                       <Think />
                     </div>
                   </div>
-                  <div className="min-h-[calc(55dvh-56px)]" />
+                  <div className="ios-min-vh-55 min-h-[calc(55vh-56px)]" />
                 </>
               )}
 

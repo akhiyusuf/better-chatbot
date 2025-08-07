@@ -18,6 +18,29 @@ export default () => {
     experimental: {
       taint: true,
     },
+    // iOS Safari compatibility
+    compiler: {
+      removeConsole:
+        process.env.NODE_ENV === "production"
+          ? {
+              exclude: ["error", "warn"],
+            }
+          : false,
+    },
+    // Webpack config for iOS compatibility
+    webpack: (config, { isServer }) => {
+      // iOS Safari compatibility fixes
+      if (!isServer) {
+        config.resolve.fallback = {
+          ...config.resolve.fallback,
+          fs: false,
+          net: false,
+          tls: false,
+        };
+      }
+
+      return config;
+    },
   };
   const withNextIntl = createNextIntlPlugin();
   return withNextIntl(nextConfig);
