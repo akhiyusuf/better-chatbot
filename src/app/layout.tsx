@@ -9,7 +9,6 @@ import {
 import { Toaster } from "ui/sonner";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale } from "next-intl/server";
-import Script from "next/script";
 import { IOSCompatibilityFix } from "@/components/ios-compatibility-fix";
 const geistSans = Geist({
   variable: "--font-geist-sans",
