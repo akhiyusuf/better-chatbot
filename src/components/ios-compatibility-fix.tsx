@@ -7,12 +7,13 @@ import { disableProblematicDebugTools } from "@/lib/ios-debug-fix";
 declare global {
   interface Window {
     eruda?: any;
-    requestIdleCallback?: (callback: IdleRequestCallback) => number;
-    cancelIdleCallback?: (id: number) => void;
   }
 }
 
-type IdleRequestCallback = (deadline: { timeRemaining(): number }) => void;
+type IdleRequestCallback = (deadline: {
+  timeRemaining(): number;
+  didTimeout: boolean;
+}) => void;
 
 export function IOSCompatibilityFix() {
   useEffect(() => {
@@ -23,10 +24,15 @@ export function IOSCompatibilityFix() {
 
       // iOS Safari polyfills and fixes
       if (!window.requestIdleCallback) {
-        window.requestIdleCallback = function (cb: IdleRequestCallback) {
-          return setTimeout(cb, 1);
+        (window as any).requestIdleCallback = function (
+          cb: IdleRequestCallback,
+        ) {
+          return setTimeout(
+            () => cb({ timeRemaining: () => 50, didTimeout: false }),
+            1,
+          );
         };
-        window.cancelIdleCallback = function (id: number) {
+        (window as any).cancelIdleCallback = function (id: number) {
           clearTimeout(id);
         };
       }
@@ -74,7 +80,7 @@ export function IOSCompatibilityFix() {
 
       // Error handling for iOS Safari
       const originalConsoleError = console.error;
-      console.error = function (...args) {
+      console.error = function (...args: any[]) {
         // Filter out known iOS Safari issues
         const message = args.join(" ");
         if (
