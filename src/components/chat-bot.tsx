@@ -47,6 +47,7 @@ import { useGenerateThreadTitle } from "@/hooks/queries/use-generate-thread-titl
 import dynamic from "next/dynamic";
 import { useMounted } from "@/hooks/use-mounted";
 import { getStorageManager } from "lib/browser-stroage";
+import { useIOSPerformance } from "@/hooks/use-ios-performance";
 
 type Props = {
   threadId: string;
@@ -74,6 +75,9 @@ firstTimeStorage.set(false);
 
 export default function ChatBot({ threadId, initialMessages, slots }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
+  
+  // Apply iOS performance optimizations
+  useIOSPerformance();
 
   const [thinking, setThinking] = useState(false);
 

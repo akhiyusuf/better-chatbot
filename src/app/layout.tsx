@@ -11,6 +11,8 @@ import { getLocale } from "next-intl/server";
 import { IOSCompatibilityFix } from "@/components/ios-compatibility-fix";
 import { IOSErrorBoundary } from "@/components/ios-error-boundary";
 import { IOSLoadingFallback } from "@/components/ios-loading-fallback";
+// Import Safari polyfills early
+import "@/lib/safari-polyfill";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],

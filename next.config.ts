@@ -46,6 +46,26 @@ export default () => {
               key: "X-Content-Type-Options",
               value: "nosniff",
             },
+            // iOS Safari specific headers
+            {
+              key: "Cache-Control",
+              value: "public, max-age=31536000, immutable",
+            },
+            // Prevent iOS Safari from auto-detecting content
+            {
+              key: "X-UA-Compatible",
+              value: "IE=edge",
+            },
+          ],
+        },
+        // Specific caching for static assets on iOS
+        {
+          source: "/static/(.*)",
+          headers: [
+            {
+              key: "Cache-Control",
+              value: "public, max-age=31536000, immutable",
+            },
           ],
         },
       ];

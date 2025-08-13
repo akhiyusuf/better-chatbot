@@ -86,18 +86,29 @@ export function IOSCompatibilityFix() {
 
       addMetaTag("apple-mobile-web-app-capable", "yes");
       addMetaTag("apple-mobile-web-app-status-bar-style", "default");
-      addMetaTag("format-detection", "telephone=no");
+      // Critical: Prevent Safari auto-detection that causes hydration mismatches
+      addMetaTag("format-detection", "telephone=no, date=no, email=no, address=no");
 
       // Fix iOS Safari 100vh issue by setting CSS custom property
       const setViewportHeight = () => {
         const vh = window.innerHeight * 0.01;
         document.documentElement.style.setProperty("--vh", `${vh}px`);
+        
+        // Also set dynamic viewport height for modern browsers
+        if (CSS.supports("height", "100dvh")) {
+          document.documentElement.style.setProperty("--dvh-supported", "1");
+        }
       };
 
       setViewportHeight();
       window.addEventListener("resize", setViewportHeight);
       window.addEventListener("orientationchange", () => {
         setTimeout(setViewportHeight, 100);
+      });
+      
+      // Handle iOS Safari address bar changes
+      window.addEventListener("scroll", () => {
+        requestAnimationFrame(setViewportHeight);
       });
 
       // Error handling for iOS Safari
@@ -127,6 +138,13 @@ export function IOSCompatibilityFix() {
           -webkit-text-size-adjust: 100%;
           -webkit-font-smoothing: antialiased;
           -moz-osx-font-smoothing: grayscale;
+          /* Prevent iOS bounce scrolling */
+          overscroll-behavior: none;
+        }
+        
+        /* Improve touch responsiveness */
+        button, [role="button"], input, textarea, select {
+          touch-action: manipulation;
         }
         
         /* Fix for iOS Safari dvh fallback */
@@ -135,9 +153,22 @@ export function IOSCompatibilityFix() {
           height: calc(var(--vh, 1vh) * 100);
         }
         
+        /* Use dynamic viewport height if supported */
+        @supports (height: 100dvh) {
+          .ios-vh-fix {
+            height: 100dvh;
+          }
+        }
+        
         .ios-min-vh-55 {
           min-height: 55vh;
           min-height: calc(var(--vh, 1vh) * 55);
+        }
+        
+        @supports (min-height: 55dvh) {
+          .ios-min-vh-55 {
+            min-height: 55dvh;
+          }
         }
         
         /* Prevent iOS Safari bounce */

@@ -1,7 +1,32 @@
-// Safari iOS 15 compatibility polyfills
+// Safari iOS compatibility polyfills for critical features
 
 // Check if we're in a browser environment
 if (typeof window !== "undefined") {
+  // Polyfill for IntersectionObserver (critical for iOS Safari ≤12)
+  if (!window.IntersectionObserver) {
+    // Simple fallback for IntersectionObserver
+    (window as any).IntersectionObserver = class {
+      constructor(callback: any) {
+        this.callback = callback;
+      }
+      observe() {
+        // Fallback: trigger callback immediately
+        setTimeout(() => this.callback([{ isIntersecting: true }]), 0);
+      }
+      unobserve() {}
+      disconnect() {}
+    };
+  }
+  
+  // Polyfill for requestIdleCallback (not supported in Safari)
+  if (!window.requestIdleCallback) {
+    (window as any).requestIdleCallback = function (callback: any) {
+      return setTimeout(() => callback({ timeRemaining: () => 50, didTimeout: false }), 1);
+    };
+    (window as any).cancelIdleCallback = function (id: number) {
+      clearTimeout(id);
+    };
+  }
   // Polyfill for named capture groups in regex (not supported in Safari iOS 15)
   const originalRegExpTest = RegExp.prototype.test;
   const originalRegExpExec = RegExp.prototype.exec;
@@ -90,4 +115,27 @@ if (typeof window !== "undefined") {
       }, 1000);
     }
   });
+  
+  // iOS performance optimizations
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
+    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    
+  if (isIOS) {
+    // Optimize scroll performance on iOS
+    document.addEventListener('touchstart', function() {}, { passive: true });
+    document.addEventListener('touchmove', function() {}, { passive: true });
+    
+    // Prevent iOS Safari from pausing timers when scrolling
+    let scrollTimer: number;
+    window.addEventListener('scroll', () => {
+      clearTimeout(scrollTimer);
+      scrollTimer = window.setTimeout(() => {
+        // Force a repaint to prevent iOS Safari issues
+        document.body.style.transform = 'translateZ(0)';
+        requestAnimationFrame(() => {
+          document.body.style.transform = '';
+        });
+      }, 150);
+    }, { passive: true });
+  }
 }
