@@ -1,5 +1,12 @@
 import { IOSCompatibilityChecker } from "@/components/ios-compatibility-checker";
 import { IOSCompatibilityTest } from "@/components/ios-compatibility-test";
+import dynamic from "next/dynamic";
+
+// Dynamically import PWA status to avoid SSR issues
+const PWACacheStatus = dynamic(() => import("@/components/pwa-cache-status"), {
+  ssr: false,
+  loading: () => <div className="p-4 border rounded-lg">Loading PWA status...</div>
+});
 
 export default function IOSTestPage() {
   return (
@@ -21,6 +28,11 @@ export default function IOSTestPage() {
           <h2 className="text-xl font-semibold">Legacy Test Suite</h2>
           <IOSCompatibilityTest />
         </div>
+      </div>
+
+      <div className="space-y-4">
+        <h2 className="text-xl font-semibold">PWA Cache Status</h2>
+        <PWACacheStatus />
       </div>
 
       <div className="space-y-4">

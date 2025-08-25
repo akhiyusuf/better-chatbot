@@ -11,8 +11,9 @@ import { getLocale } from "next-intl/server";
 import { IOSCompatibilityFix } from "@/components/ios-compatibility-fix";
 import { IOSErrorBoundary } from "@/components/ios-error-boundary";
 import { IOSLoadingFallback } from "@/components/ios-loading-fallback";
-// Import Safari polyfills early
+// Import Safari polyfills and iOS optimizations early
 import "@/lib/safari-polyfill";
+import "@/lib/ios-pwa-optimization";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -34,6 +35,7 @@ export const metadata: Metadata = {
   title: "better-chatbot",
   description:
     "Better Chatbot is a chatbot that uses the Tools to answer questions.",
+  manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
@@ -41,6 +43,9 @@ export const metadata: Metadata = {
   },
   formatDetection: {
     telephone: false,
+    date: false,
+    email: false,
+    address: false,
   },
 };
 
